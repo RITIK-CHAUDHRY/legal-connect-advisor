@@ -3,15 +3,19 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Users, FileText, Clock, Plus, Settings, LogOut } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Calendar, Users, FileText, Clock, Plus, Settings, LogOut, Inbox, Moon, Sun, Bell } from 'lucide-react';
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const LawyerDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(true);
+  const { theme, toggleTheme } = useTheme();
 
   const sidebarItems = [
     { id: 'dashboard', title: 'Dashboard', icon: Users },
+    { id: 'inbox', title: 'Inbox', icon: Inbox },
     { id: 'cases', title: 'My Cases', icon: FileText },
     { id: 'appointments', title: 'Manage Appointments', icon: Calendar },
     { id: 'settings', title: 'Settings', icon: Settings },
@@ -23,6 +27,36 @@ const LawyerDashboard = () => {
     activeCases: 12,
     pendingCases: 8
   };
+
+  const consultationRequests = [
+    {
+      id: 1,
+      clientName: "Mr. Vikash Gupta",
+      problemType: "Criminal Law",
+      requestedTime: "Tomorrow 3:00 PM",
+      description: "Need consultation regarding false criminal charges filed against me.",
+      urgent: true
+    },
+    {
+      id: 2,
+      clientName: "Mrs. Sunita Devi",
+      problemType: "Family Law",
+      requestedTime: "Today 5:00 PM",
+      description: "Divorce proceedings consultation needed.",
+      urgent: false
+    }
+  ];
+
+  const caseRequests = [
+    {
+      id: 1,
+      clientName: "Mr. Rajesh Kumar",
+      caseType: "Property Dispute",
+      description: "Land ownership conflict case representation needed.",
+      budget: "₹50,000",
+      urgent: false
+    }
+  ];
 
   if (!isVerified) {
     return (
@@ -87,12 +121,21 @@ const LawyerDashboard = () => {
                 <SidebarTrigger />
                 <h1 className="text-2xl font-bold">
                   {activeTab === 'dashboard' && 'Dashboard'}
+                  {activeTab === 'inbox' && 'Inbox'}
                   {activeTab === 'cases' && 'My Cases'}
                   {activeTab === 'appointments' && 'Manage Appointments'}
                   {activeTab === 'settings' && 'Settings'}
                 </h1>
               </div>
-              <Badge variant="secondary">Verified Lawyer</Badge>
+              <div className="flex items-center space-x-4">
+                <Button variant="ghost" size="icon">
+                  <Bell className="h-4 w-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={toggleTheme}>
+                  {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                </Button>
+                <Badge variant="secondary">Verified Lawyer</Badge>
+              </div>
             </div>
           </header>
 
@@ -165,6 +208,70 @@ const LawyerDashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            )}
+
+            {activeTab === 'inbox' && (
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Consultation Requests */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Consultation Requests</CardTitle>
+                      <CardDescription>Pending consultation requests from clients</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {consultationRequests.map((request) => (
+                        <div key={request.id} className="border rounded p-4 space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-medium">{request.clientName}</h3>
+                              <p className="text-sm text-muted-foreground">{request.problemType}</p>
+                            </div>
+                            {request.urgent && <Badge variant="destructive">Urgent</Badge>}
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium">Requested Time:</span> {request.requestedTime}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{request.description}</p>
+                          <div className="flex space-x-2">
+                            <Button size="sm">Accept</Button>
+                            <Button size="sm" variant="outline">Decline</Button>
+                          </div>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+
+                  {/* Case Requests */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Case Requests</CardTitle>
+                      <CardDescription>Clients requesting case representation</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {caseRequests.map((request) => (
+                        <div key={request.id} className="border rounded p-4 space-y-3">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-medium">{request.clientName}</h3>
+                              <p className="text-sm text-muted-foreground">{request.caseType}</p>
+                            </div>
+                            {request.urgent && <Badge variant="destructive">Urgent</Badge>}
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium">Budget:</span> {request.budget}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{request.description}</p>
+                          <div className="flex space-x-2">
+                            <Button size="sm">Accept & Quote</Button>
+                            <Button size="sm" variant="outline">Decline</Button>
+                          </div>
+                        </div>
+                      ))}
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             )}
 
@@ -304,16 +411,75 @@ const LawyerDashboard = () => {
 
             {activeTab === 'settings' && (
               <div className="space-y-6">
-                <h2 className="text-xl font-semibold">Profile Settings</h2>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Update Your Information</CardTitle>
-                    <CardDescription>Keep your profile information up to date</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">Settings panel would go here...</p>
-                  </CardContent>
-                </Card>
+                <h2 className="text-xl font-semibold">Settings</h2>
+                
+                <div className="grid gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Appearance</CardTitle>
+                      <CardDescription>Customize your interface appearance</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <div className="text-base">Dark Theme</div>
+                          <div className="text-sm text-muted-foreground">
+                            Toggle between light and dark mode
+                          </div>
+                        </div>
+                        <Switch checked={theme === 'dark'} onCheckedChange={toggleTheme} />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Profile Information</CardTitle>
+                      <CardDescription>Update your professional details</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm font-medium">Full Name</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="Adv. Your Name" />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium">Enrollment Number</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="DL/12345/2015" />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium">Specialization</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="Criminal Law" />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium">Experience (Years)</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="8" />
+                        </div>
+                      </div>
+                      <Button>Save Changes</Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Consultation Settings</CardTitle>
+                      <CardDescription>Configure your consultation availability and rates</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm font-medium">Consultation Fee (per minute)</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="₹50" />
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium">Available Hours</label>
+                          <input className="w-full mt-1 px-3 py-2 border rounded-md" placeholder="9:00 AM - 6:00 PM" />
+                        </div>
+                      </div>
+                      <Button>Update Settings</Button>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             )}
           </div>
