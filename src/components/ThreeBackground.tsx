@@ -37,29 +37,29 @@ const FloatingElements = () => {
           {i % 3 === 0 ? (
             <Sphere args={[element.scale, 8, 8]}>
               <meshPhongMaterial 
-                color={new THREE.Color(0.2, 0.4, 0.8)}
+                color="#3366cc"
                 transparent
                 opacity={0.1}
-                emissive={new THREE.Color(0.1, 0.2, 0.4)}
+                emissive="#1a2d5c"
               />
             </Sphere>
           ) : i % 3 === 1 ? (
             <Box args={[element.scale, element.scale, element.scale]}>
               <meshPhongMaterial 
-                color={new THREE.Color(0.4, 0.2, 0.8)}
+                color="#6633cc"
                 transparent
                 opacity={0.1}
-                emissive={new THREE.Color(0.2, 0.1, 0.4)}
+                emissive="#331a5c"
               />
             </Box>
           ) : (
             <mesh>
               <octahedronGeometry args={[element.scale, 0]} />
               <meshPhongMaterial 
-                color={new THREE.Color(0.8, 0.4, 0.2)}
+                color="#cc6633"
                 transparent
                 opacity={0.1}
-                emissive={new THREE.Color(0.4, 0.2, 0.1)}
+                emissive="#5c331a"
               />
             </mesh>
           )}
