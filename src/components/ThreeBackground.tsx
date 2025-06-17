@@ -1,7 +1,6 @@
 
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Box } from '@react-three/drei';
 import * as THREE from 'three';
 
 const FloatingElements = () => {
@@ -35,23 +34,25 @@ const FloatingElements = () => {
       {elements.map((element, i) => (
         <group key={i} position={element.position}>
           {i % 3 === 0 ? (
-            <Sphere args={[element.scale, 8, 8]}>
+            <mesh>
+              <sphereGeometry args={[element.scale, 8, 8]} />
               <meshPhongMaterial 
                 color="#3366cc"
                 transparent
                 opacity={0.1}
                 emissive="#1a2d5c"
               />
-            </Sphere>
+            </mesh>
           ) : i % 3 === 1 ? (
-            <Box args={[element.scale, element.scale, element.scale]}>
+            <mesh>
+              <boxGeometry args={[element.scale, element.scale, element.scale]} />
               <meshPhongMaterial 
                 color="#6633cc"
                 transparent
                 opacity={0.1}
                 emissive="#331a5c"
               />
-            </Box>
+            </mesh>
           ) : (
             <mesh>
               <octahedronGeometry args={[element.scale, 0]} />
