@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Scale, Users, Shield, Phone, Mail, MapPin, Star, Clock, Award } from 'lucide-react';
@@ -25,7 +24,7 @@ const Index = () => {
       );
     }
 
-    // Animate sections on scroll
+    // Simple animate sections on scroll without ScrollTrigger
     const sections = document.querySelectorAll('section');
     sections.forEach((section, index) => {
       gsap.fromTo(section,
@@ -35,12 +34,7 @@ const Index = () => {
           y: 0, 
           duration: 0.8, 
           delay: index * 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-            toggleActions: "play none none reverse"
-          }
+          ease: "power2.out"
         }
       );
     });
